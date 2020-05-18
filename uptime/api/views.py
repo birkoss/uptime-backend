@@ -15,8 +15,12 @@ from . import serializers as api_serializers
 class BotViewSet(viewsets.ModelViewSet):
     queryset = models.Bot.objects.all()
     serializer_class = api_serializers.BotSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class ServerViewSet(viewsets.ModelViewSet):
-    queryset = models.Server.objects.all()
     serializer_class = api_serializers.ServerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return models.Server.objects.filter(user=self.request.user)
