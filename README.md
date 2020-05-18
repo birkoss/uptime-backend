@@ -9,13 +9,15 @@ POST */api/auth/login/*
 
 *Response*
 Status: 200 OK
-`{
+```
+{
     "id": 1,
     "email": "email@domain.com",
     "is_active": true,
     "is_staff": false,
     "token": "*** HIDDEN ***"
-}`
+}
+```
 
 
 POST */api/auth/register/*
@@ -26,13 +28,15 @@ POST */api/auth/register/*
 
 *Response*
 Status: 201 Created
-`{
+```
+{
     "id": 2
     "email": "email2@domain.com",
     "is_active": true,
     "is_staff": false,
     "auth_token": "*** HIDDEN ***"
-}`
+}
+```
 
 
 POST */api/auth/change_password/*
