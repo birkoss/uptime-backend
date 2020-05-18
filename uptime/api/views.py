@@ -24,3 +24,11 @@ class ServerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.Server.objects.filter(user=self.request.user)
+
+
+class EndpointViewSet(viewsets.ModelViewSet):
+    serializer_class = api_serializers.EndpointSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return models.Endpoint.objects.all()
