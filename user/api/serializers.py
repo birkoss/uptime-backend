@@ -22,19 +22,30 @@ class AuthUserSerializer(serializers.ModelSerializer):
         return token.key
 
 
-class EmptySerializer(serializers.Serializer):
-    """
-    An empty serializer which accepts nothing
-    """
-    pass
-
-
 class UserLoginSerializer(serializers.Serializer):
     """
     A user serializer for logging in the user
     """
     email = serializers.CharField(max_length=100, required=True)
     password = serializers.CharField(required=True, write_only=True)
+
+
+class UserPasswordChangeSerializer(serializers.Serializer):
+    """
+    A User serializer for changing password
+    """
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        print(self.context)
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError('Current password does not match')
+        return value
+    
+    def validate_new_password(self, value):
+        password_validation.validate_password(value)
+        return value
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

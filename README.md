@@ -18,6 +18,7 @@ Status: 200 OK
     "token": "*** HIDDEN ***"
 }
 
+
 POST */api/auth/register/*
 
 *Parameters*
@@ -33,3 +34,14 @@ Status: 201 Created
     "is_staff": false,
     "auth_token": "*** HIDDEN ***"
 }
+
+
+POST */api/auth/change_password/*
+
+*Parameters*
+- current_password = string, required, match current password
+- new_password = string, required
+
+*Response*
+Status: 204 No-Content
+
