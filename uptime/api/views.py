@@ -32,3 +32,9 @@ class EndpointViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.Endpoint.objects.filter(server__id=self.kwargs['server_pk'])
+
+
+class ServerProtocolViewSet(viewsets.ModelViewSet):
+    queryset = models.ServerProtocol.objects.all()
+    serializer_class = api_serializers.ServerProtocolSerializer
+    permission_classes = [IsAuthenticated]

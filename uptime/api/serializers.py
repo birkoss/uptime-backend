@@ -16,9 +16,16 @@ class EndpointSerializer(serializers.ModelSerializer):
         fields = ('id', 'url', 'date_added')
 
 
+class ServerProtocolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ServerProtocol
+        fields = ('id', 'name', 'slug')
+
+
 class ServerSerializer(serializers.ModelSerializer):
-    endpoints = EndpointSerializer(many=False, read_only=True)
+    protocol = ServerProtocolSerializer(many=False, read_only=True)
 
     class Meta:
         model = models.Server
-        fields = ('id', 'hostname', 'protocol', 'date_added', 'date_changed', 'is_active', 'endpoints')
+        fields = ('id', 'hostname', 'protocol', 'date_added', 'date_changed', 'is_active')
+

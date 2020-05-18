@@ -8,7 +8,7 @@ POST */api/auth/login/*
 - password = string, required
 
 *Response*
-Status: 200 OK
+Status: **200 OK**
 ```
 {
     "id": 1,
@@ -27,7 +27,7 @@ POST */api/auth/register/*
 - password = string, required
 
 *Response*
-Status: 201 Created
+Status: **201 Created**
 ```
 {
     "id": 2
@@ -46,5 +46,42 @@ POST */api/auth/change_password/*
 - new_password = string, required
 
 *Response*
-Status: 204 No-Content
+Status: **204 No-Content**
 
+
+GET */api/servers/*
+
+*Response*
+Status: **200 OK**
+```
+[
+    {
+        "id": 1,
+        "hostname": "domain.com",
+        "protocol": {
+            "id": 1,
+            "name": "HTTPS",
+            "slug": "https"
+        },
+        "date_added": "2020-05-18T12:52:40.334790-04:00",
+        "date_changed": "2020-05-18T12:52:40.334821-04:00",
+        "is_active": true
+    },
+    {
+        "id": 2,
+        "hostname": "domain.ca",
+        "protocol": {
+            "id": 1,
+            "name": "HTTPS",
+            "slug": "https"
+        },
+        "date_added": "2020-05-18T18:37:31.783833-04:00",
+        "date_changed": "2020-05-18T18:37:31.783866-04:00",
+        "is_active": true
+    }
+]
+```
+
+protocols/
+
+servers/1/endpoints/1/
