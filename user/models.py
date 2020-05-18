@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 
 from .managers import UserManager
 
+
 # Custom User model
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
@@ -24,6 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
 
 # Create a token when an user is created
 @receiver(post_save, sender=User)
