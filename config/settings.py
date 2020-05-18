@@ -11,6 +11,7 @@ INSTALLED_APPS = [
 
     'user',
     'api',
+    'uptime',
 ]
 
 MIDDLEWARE = [
