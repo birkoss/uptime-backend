@@ -1,6 +1,21 @@
+import uuid
+
 from django.db import models
 
 from user.models import User
+
+
+class Bot(models.Model):
+    name = models.CharField(max_length=100, default='')
+    key = models.SlugField(max_length=32, default='', blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.key.strip():
+            self.key = uuid.uuid1().hex
+        super(Bot, self).save()
 
 
 class ServerProtocol(models.Model):
@@ -36,6 +51,7 @@ class Endpoint(models.Model):
 
 class Ping(models.Model):
     endpoint = models.ForeignKey(Endpoint, on_delete=models.PROTECT)
+    bot = models.ForeignKey(Bot, on_delete=models.PROTECT)
     date_added = models.DateTimeField(auto_now_add=True)
 
     response_code = models.SmallIntegerField(db_index=True)
