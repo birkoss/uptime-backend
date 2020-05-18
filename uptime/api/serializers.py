@@ -14,9 +14,6 @@ class EndpointSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Endpoint
         fields = ('id', 'url', 'date_added')
-    #server = models.ForeignKey(Server, on_delete=models.PROTECT)
-    #url = models.CharField(max_length=100, default='')
-    #date_added = models.DateTimeField(auto_now_add=True)
 
 
 class ServerSerializer(serializers.ModelSerializer):

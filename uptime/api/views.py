@@ -31,4 +31,4 @@ class EndpointViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return models.Endpoint.objects.all()
+        return models.Endpoint.objects.filter(server__id=self.kwargs['server_pk'])
