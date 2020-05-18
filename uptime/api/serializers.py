@@ -3,8 +3,6 @@ from rest_framework.authtoken.models import Token
 
 from uptime import models
 
-from user.models import User
-
 
 class BotSerializer(serializers.ModelSerializer):
     class Meta:

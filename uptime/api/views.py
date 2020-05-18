@@ -1,6 +1,5 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import get_object_or_404
-
 from rest_framework import serializers, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -11,6 +10,7 @@ from rest_framework.views import APIView
 from uptime import models
 
 from . import serializers as api_serializers
+
 
 class BotViewSet(viewsets.ModelViewSet):
     queryset = models.Bot.objects.all()
