@@ -82,6 +82,81 @@ Status: **200 OK**
 ]
 ```
 
+POST */api/servers/*
+
+*Parameters*
+- hostname = string, required
+- protocol_id = number, required
+- is_active = boolean, required
+
+*Response*
+Status: **201 Created**
+```
+{
+    "id": 1,
+    "hostname": "domain.com",
+    "protocol": {
+        "id": 1,
+        "name": "HTTPS",
+        "slug": "https"
+    },
+    "date_added": "2020-05-18T12:52:40.334790-04:00",
+    "date_changed": "2020-05-18T12:52:40.334821-04:00",
+    "is_active": true
+}
+```
+
+GET */api/servers/SERVER_ID/*
+
+*Response*
+Status: **200 Ok**
+```
+{
+    "id": 17,
+    "hostname": "standish.ca",
+    "protocol": {
+        "id": 1,
+        "name": "HTTPS",
+        "slug": "https"
+    },
+    "date_added": "2020-05-18T20:06:44.810165-04:00",
+    "date_changed": "2020-05-18T20:08:43.669312-04:00",
+    "is_active": true
+}
+```
+
+PUT */api/servers/SERVER_ID/*
+
+*Parameters*
+- hostname = string, required
+- protocol_id = number, required
+- is_active = boolean, required
+
+*Response*
+Status: **200 Ok**
+```
+{
+    "id": 17,
+    "hostname": "standish.ca",
+    "protocol": {
+        "id": 1,
+        "name": "HTTPS",
+        "slug": "https"
+    },
+    "date_added": "2020-05-18T20:06:44.810165-04:00",
+    "date_changed": "2020-05-18T20:08:43.669312-04:00",
+    "is_active": true
+}
+```
+
+DELETE */api/servers/SERVER_ID/*
+
+*Response*
+Status: **204 No-Content**
+
 protocols/
 
 servers/1/endpoints/1/
+
+
+**204 No-Content**

@@ -18,13 +18,13 @@ class BotViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+# @TODO: Check delete for the same user
 class ServerViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.ServerReadSerializer
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        #return models.Server.objects.filter(user=self.request.user)
-        return models.Server.objects.all()
+        return models.Server.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -40,6 +40,13 @@ class EndpointViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.EndpointSerializer
     permission_classes = [IsAuthenticated]
 
+    # Validate that the parent Server is owned by the User
+    def initial(self, request, *args, **kwargs):
+        get_object_or_404(models.Server.objects.filter(user=request.user), pk=kwargs['server_pk'])
+
+        viewsets.ModelViewSet.initial(self, request, *args, **kwargs)
+
+    # Validate that the Endpoint is from the parent Server
     def get_queryset(self):
         return models.Endpoint.objects.filter(server__id=self.kwargs['server_pk'])
 
