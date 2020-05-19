@@ -37,3 +37,9 @@ class ServerReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Server
         fields = ('id', 'hostname', 'protocol', 'date_added', 'date_changed', 'is_active')
+
+
+class PingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Ping
+        fields = ('endpoint', 'bot', 'response_code', 'response_time', 'response_headers', 'response_body')

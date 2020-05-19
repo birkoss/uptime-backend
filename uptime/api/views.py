@@ -12,13 +12,19 @@ from uptime import models
 from . import serializers as api_serializers
 
 
-class BotViewSet(viewsets.ModelViewSet):
+class BotViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Read-only ViewSet for Bot
+    """
     queryset = models.Bot.objects.all()
     serializer_class = api_serializers.BotSerializer
     permission_classes = [IsAuthenticated]
 
 
 class ServerViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for Server
+    """
     serializer_class = api_serializers.ServerReadSerializer
     permission_classes = [IsAuthenticated]
 
@@ -35,6 +41,9 @@ class ServerViewSet(viewsets.ModelViewSet):
 
 
 class EndpointViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for Endpoint
+    """
     serializer_class = api_serializers.EndpointSerializer
     permission_classes = [IsAuthenticated]
 
@@ -60,6 +69,31 @@ class EndpointViewSet(viewsets.ModelViewSet):
 
 
 class ServerProtocolViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Read-only ViewSet for ServerProtocol
+    """
     queryset = models.ServerProtocol.objects.all()
     serializer_class = api_serializers.ServerProtocolSerializer
     permission_classes = [IsAuthenticated]
+
+
+class PingViewSet(viewsets.ModelViewSet):
+    serializer_class = api_serializers.PingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def initial(self, request, *args, **kwargs):
+        """
+        Validate that the parent Server and Endpoint is owned by the User
+        """
+        print(kwargs)
+        server = get_object_or_404(models.Server.objects.filter(user=request.user), pk=kwargs['server_pk'])
+
+        endpoint = get_object_or_404(models.Endpoint.objects.filter(server=server), pk=kwargs['server_endpoint_pk'])
+
+        viewsets.ModelViewSet.initial(self, request, *args, **kwargs)
+
+    def get_queryset(self):
+        """
+        Validate that the Pink is from the parent Server and Endpoint
+        """
+        return models.Ping.objects.filter(endpoint__server__id=self.kwargs['server_pk'], endpoint__id=self.kwargs['server_endpoint_pk'])

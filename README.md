@@ -49,6 +49,40 @@ POST */api/auth/change_password/*
 Status: **204 No-Content**
 
 
+GET */api/protocols/*
+
+*Response*
+Status: **200 OK**
+```
+[
+    {
+        "id": 1,
+        "name": "HTTPS",
+        "slug": "https"
+    },
+    {
+        "id": 2,
+        "name": "HTTP",
+        "slug": "http"
+    }
+]
+```
+
+
+GET */api/bots/*
+
+*Response*
+Status: **200 OK**
+```
+[
+    {
+        "id": 1,
+        "name": "box217"
+    }
+]
+```
+
+
 GET */api/servers/*
 
 *Response*
@@ -159,29 +193,8 @@ DELETE */api/servers/SERVER_ID/*
 Status: **204 No-Content**
 
 
-GET */api/protocols/*
-
-*Response*
-Status: **200 OK**
-```
-[
-    {
-        "id": 1,
-        "name": "HTTPS",
-        "slug": "https"
-    },
-    {
-        "id": 2,
-        "name": "HTTP",
-        "slug": "http"
-    }
-]
-```
 
 
-
-
-protocols/
 
 servers/1/endpoints/1/
 
