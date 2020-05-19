@@ -82,6 +82,7 @@ Status: **200 OK**
 ]
 ```
 
+
 POST */api/servers/*
 
 *Parameters*
@@ -106,6 +107,7 @@ Status: **201 Created**
 }
 ```
 
+
 GET */api/servers/SERVER_ID/*
 
 *Response*
@@ -124,6 +126,7 @@ Status: **200 Ok**
     "is_active": true
 }
 ```
+
 
 PUT */api/servers/SERVER_ID/*
 
@@ -149,10 +152,34 @@ Status: **200 Ok**
 }
 ```
 
+
 DELETE */api/servers/SERVER_ID/*
 
 *Response*
 Status: **204 No-Content**
+
+
+GET */api/protocols/*
+
+*Response*
+Status: **200 OK**
+```
+[
+    {
+        "id": 1,
+        "name": "HTTPS",
+        "slug": "https"
+    },
+    {
+        "id": 2,
+        "name": "HTTP",
+        "slug": "http"
+    }
+]
+```
+
+
+
 
 protocols/
 

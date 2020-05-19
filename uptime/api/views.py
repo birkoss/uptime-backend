@@ -18,7 +18,6 @@ class BotViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-# @TODO: Check delete for the same user
 class ServerViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.ServerReadSerializer
     permission_classes = [IsAuthenticated]
@@ -30,7 +29,6 @@ class ServerViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
-        print(self.action)
         if self.action == 'create' or self.action == 'put':
             return api_serializers.ServerWriteSerializer
         return self.serializer_class
@@ -40,18 +38,28 @@ class EndpointViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.EndpointSerializer
     permission_classes = [IsAuthenticated]
 
-    # Validate that the parent Server is owned by the User
     def initial(self, request, *args, **kwargs):
+        """
+        Validate that the parent Server is owned by the User
+        """
         get_object_or_404(models.Server.objects.filter(user=request.user), pk=kwargs['server_pk'])
 
         viewsets.ModelViewSet.initial(self, request, *args, **kwargs)
 
-    # Validate that the Endpoint is from the parent Server
     def get_queryset(self):
+        """
+        Validate that the Endpoint is from the parent Server
+        """
         return models.Endpoint.objects.filter(server__id=self.kwargs['server_pk'])
 
+    def perform_create(self, serializer):
+        """
+        Apply the parent Server
+        """
+        serializer.save(server=get_object_or_404(models.Server.objects.all(), pk=self.kwargs['server_pk']))
 
-class ServerProtocolViewSet(viewsets.ModelViewSet):
+
+class ServerProtocolViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ServerProtocol.objects.all()
     serializer_class = api_serializers.ServerProtocolSerializer
     permission_classes = [IsAuthenticated]
