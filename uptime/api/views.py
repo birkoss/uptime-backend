@@ -35,14 +35,26 @@ class ServerViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
+        args = {}
+        if not self.request.user.is_staff:
+            args = {'user': self.request.user}
+
         serializer.save(
-            user=self.request.user
+            **args
         )
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'put':
-            return api_serializers.ServerWriteSerializer
+            if self.request.user.is_staff:
+                return api_serializers.ServerWriteStaffSerializer
+            else:
+                return api_serializers.ServerWriteUserSerializer
         return self.serializer_class
+
+    def handle_exception(self, exc):
+        return Response({
+            "error": exc.__str__()
+        })
 
 
 class EndpointViewSet(viewsets.ModelViewSet):

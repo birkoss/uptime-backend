@@ -55,9 +55,14 @@ class Ping(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     response_code = models.SmallIntegerField(db_index=True)
-    response_time = models.DecimalField(max_digits=10, decimal_places=6)    # Ex: 1234.123456
+    response_time = models.DecimalField(
+        max_digits=10, decimal_places=6
+    )  # 1234.123456
     response_headers = models.TextField()
     response_body = models.TextField()
 
     class Meta:
         ordering = ('-date_added', )
+
+    def __str__(self):
+        return self.endpoint.__str__() + " (" + str(self.response_code) + ") = " + str(self.response_time)

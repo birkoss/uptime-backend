@@ -22,7 +22,24 @@ class ServerProtocolSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug')
 
 
-class ServerWriteSerializer(serializers.ModelSerializer):
+class ServerWriteStaffSerializer(serializers.ModelSerializer):
+    protocol = ServerProtocolSerializer(many=False, read_only=True)
+    protocol_id = serializers.IntegerField(write_only=True)
+    user_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = models.Server
+        fields = (
+            'id',
+            'hostname',
+            'protocol',
+            'protocol_id',
+            'user_id',
+            'is_active'
+        )
+
+
+class ServerWriteUserSerializer(serializers.ModelSerializer):
     protocol = ServerProtocolSerializer(many=False, read_only=True)
     protocol_id = serializers.IntegerField(write_only=True)
 
