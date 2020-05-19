@@ -131,7 +131,7 @@ class PingViewSet(viewsets.ModelViewSet):
             qs_filters.add(Q(date_added__day=day), Q.AND)
 
 
-        pings = models.Ping.objects.filter(qs_filters).annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time')).order_by()
+        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time'))
         return Response(pings)
 
     def initial(self, request, *args, **kwargs):
