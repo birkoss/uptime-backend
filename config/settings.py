@@ -8,12 +8,14 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 
     'user',
     'uptime',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,5 +76,7 @@ USE_TZ = True
 
 # Custom Auth User Model
 AUTH_USER_MODEL = 'user.User'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 from .config import *
