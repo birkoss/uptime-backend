@@ -1,5 +1,5 @@
 from django.contrib.auth import login, authenticate
-from django.db.models import Avg, Max, Min, Q
+from django.db.models import Avg, Max, Min, Q, Count
 from django.db.models.functions import TruncMonth, TruncDay, TruncHour
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, viewsets
@@ -132,7 +132,7 @@ class PingViewSet(viewsets.ModelViewSet):
             qs_grouping = {'grouping': TruncDay('date_added')}
             limit = 24
 
-        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time')).order_by("-grouping")[:24]
+        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time'), Count('response_time')).order_by("-grouping")[:24]
         return Response(pings)
 
     def initial(self, request, *args, **kwargs):
