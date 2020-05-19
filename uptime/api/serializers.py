@@ -22,10 +22,18 @@ class ServerProtocolSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug')
 
 
-class ServerSerializer(serializers.ModelSerializer):
+class ServerWriteSerializer(serializers.ModelSerializer):
+    protocol = ServerProtocolSerializer(many=False, read_only=True)
+    protocol_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = models.Server
+        fields = ('id', 'hostname', 'protocol', 'protocol_id', 'is_active')
+
+
+class ServerReadSerializer(serializers.ModelSerializer):
     protocol = ServerProtocolSerializer(many=False, read_only=True)
 
     class Meta:
         model = models.Server
         fields = ('id', 'hostname', 'protocol', 'date_added', 'date_changed', 'is_active')
-

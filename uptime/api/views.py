@@ -19,11 +19,21 @@ class BotViewSet(viewsets.ModelViewSet):
 
 
 class ServerViewSet(viewsets.ModelViewSet):
-    serializer_class = api_serializers.ServerSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = api_serializers.ServerReadSerializer
+    #permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return models.Server.objects.filter(user=self.request.user)
+        #return models.Server.objects.filter(user=self.request.user)
+        return models.Server.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        print(self.action)
+        if self.action == 'create' or self.action == 'put':
+            return api_serializers.ServerWriteSerializer
+        return self.serializer_class
 
 
 class EndpointViewSet(viewsets.ModelViewSet):
