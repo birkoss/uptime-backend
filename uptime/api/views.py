@@ -78,7 +78,7 @@ class ServerProtocolViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class PingViewSet(viewsets.ModelViewSet):
-    serializer_class = api_serializers.PingSerializer
+    serializer_class = api_serializers.PingReadSerializer
     permission_classes = [IsAuthenticated]
 
     def initial(self, request, *args, **kwargs):
@@ -97,3 +97,14 @@ class PingViewSet(viewsets.ModelViewSet):
         Validate that the Pink is from the parent Server and Endpoint
         """
         return models.Ping.objects.filter(endpoint__server__id=self.kwargs['server_pk'], endpoint__id=self.kwargs['server_endpoint_pk'])
+
+    def get_serializer_class(self):
+        if self.action == 'create' or self.action == 'put':
+            return api_serializers.PingWriteSerializer
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        """
+        Apply the parent Endpoint
+        """
+        serializer.save(endpoint=get_object_or_404(models.Endpoint.objects.all(), pk=self.kwargs['server_endpoint_pk']))

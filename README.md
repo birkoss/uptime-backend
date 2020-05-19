@@ -197,6 +197,7 @@ Status: **204 No-Content**
 
 
 servers/1/endpoints/1/
+servers/1/endpoints/1/pings/
 
 
 **204 No-Content**
