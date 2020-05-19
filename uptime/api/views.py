@@ -1,4 +1,6 @@
 from django.contrib.auth import login, authenticate
+from django.db.models import Avg, Max, Min, Q
+from django.db.models.functions import TruncMonth, TruncDay, TruncHour
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, viewsets
 from rest_framework.authtoken.models import Token
@@ -109,6 +111,28 @@ class ServerProtocolViewSet(viewsets.ReadOnlyModelViewSet):
 class PingViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.PingReadSerializer
     permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['GET'], name='Attach meta items ids')
+    def stats(self, request, server_pk=None, server_endpoint_pk=None):
+
+        grouping = request.GET.get('grouping', 'month')
+        year = request.GET.get('year', '0')
+        month = request.GET.get('month', '0')
+        day = request.GET.get('day', '0')
+
+        qs_filters = Q()
+        qs_filters.add(Q(endpoint__id=server_endpoint_pk), Q.AND)
+        qs_filters.add(Q(date_added__year=year), Q.AND)
+        qs_filters.add(Q(date_added__month=month), Q.AND)
+
+        qs_grouping = {'grouping': TruncMonth('date_added')}
+        if grouping == 'hour':
+            qs_grouping = {'grouping': TruncHour('date_added')}
+            qs_filters.add(Q(date_added__day=day), Q.AND)
+
+
+        pings = models.Ping.objects.filter(qs_filters).annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time')).order_by()
+        return Response(pings)
 
     def initial(self, request, *args, **kwargs):
         """
