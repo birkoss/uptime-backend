@@ -80,3 +80,5 @@ AUTH_USER_MODEL = 'user.User'
 CORS_ORIGIN_ALLOW_ALL = True
 
 from .config import *
+
+TEMPLATES[0]['DIRS'].append( TEMPLATE_DIR )
