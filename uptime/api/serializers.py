@@ -28,7 +28,13 @@ class ServerWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Server
-        fields = ('id', 'hostname', 'protocol', 'protocol_id', 'is_active')
+        fields = (
+            'id',
+            'hostname',
+            'protocol',
+            'protocol_id',
+            'is_active'
+        )
 
 
 class ServerReadSerializer(serializers.ModelSerializer):
@@ -36,7 +42,14 @@ class ServerReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Server
-        fields = ('id', 'hostname', 'protocol', 'date_added', 'date_changed', 'is_active')
+        fields = (
+            'id',
+            'hostname',
+            'protocol',
+            'date_added',
+            'date_changed',
+            'is_active'
+        )
 
 
 class PingReadSerializer(serializers.ModelSerializer):
@@ -45,7 +58,14 @@ class PingReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Ping
-        fields = ('endpoint', 'bot', 'response_code', 'response_time', 'response_headers', 'response_body')
+        fields = (
+            'endpoint',
+            'bot',
+            'response_code',
+            'response_time',
+            'response_headers',
+            'response_body'
+        )
 
 
 class PingWriteSerializer(serializers.ModelSerializer):
@@ -54,4 +74,11 @@ class PingWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Ping
-        fields = ('bot', 'bot_id', 'response_code', 'response_time', 'response_headers', 'response_body')
+        fields = (
+            'bot',
+            'bot_id',
+            'response_code',
+            'response_time',
+            'response_headers',
+            'response_body'
+        )

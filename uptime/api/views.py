@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from uptime import models
 
 from . import serializers as api_serializers
+from . import helpers as api_helpers
 
 
 class BotViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,10 +30,14 @@ class ServerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return models.Server.objects.filter(user=self.request.user)
+        return models.Server.objects.filter(
+            api_helpers.apiGetUserFilters(user=self.request.user)
+        )
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(
+            user=self.request.user
+        )
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'put':
@@ -51,7 +56,11 @@ class EndpointViewSet(viewsets.ModelViewSet):
         """
         Validate that the parent Server is owned by the User
         """
-        get_object_or_404(models.Server.objects.filter(user=request.user), pk=kwargs['server_pk'])
+        get_object_or_404(
+            models.Server.objects.filter(
+                api_helpers.apiGetUserFilters(user=self.request.user)
+            ), pk=kwargs['server_pk']
+        )
 
         viewsets.ModelViewSet.initial(self, request, *args, **kwargs)
 
@@ -59,13 +68,21 @@ class EndpointViewSet(viewsets.ModelViewSet):
         """
         Validate that the Endpoint is from the parent Server
         """
-        return models.Endpoint.objects.filter(server__id=self.kwargs['server_pk'])
+        return models.Endpoint.objects.filter(
+            server__id=self.kwargs['server_pk']
+        )
 
     def perform_create(self, serializer):
         """
         Apply the parent Server
         """
-        serializer.save(server=get_object_or_404(models.Server.objects.all(), pk=self.kwargs['server_pk']))
+        serializer.save(
+            server=get_object_or_404(
+                models.Server.objects.filter(
+                    api_helpers.apiGetUserFilters(user=self.request.user)
+                ), pk=self.kwargs['server_pk']
+            )
+        )
 
 
 class ServerProtocolViewSet(viewsets.ReadOnlyModelViewSet):
@@ -85,10 +102,17 @@ class PingViewSet(viewsets.ModelViewSet):
         """
         Validate that the parent Server and Endpoint is owned by the User
         """
-        print(kwargs)
-        server = get_object_or_404(models.Server.objects.filter(user=request.user), pk=kwargs['server_pk'])
+        server = get_object_or_404(
+            models.Server.objects.filter(
+                api_helpers.apiGetUserFilters(user=self.request.user)
+            ), pk=kwargs['server_pk']
+        )
 
-        endpoint = get_object_or_404(models.Endpoint.objects.filter(server=server), pk=kwargs['server_endpoint_pk'])
+        endpoint = get_object_or_404(
+            models.Endpoint.objects.filter(
+                server=server
+            ), pk=kwargs['server_endpoint_pk']
+        )
 
         viewsets.ModelViewSet.initial(self, request, *args, **kwargs)
 
@@ -96,7 +120,10 @@ class PingViewSet(viewsets.ModelViewSet):
         """
         Validate that the Pink is from the parent Server and Endpoint
         """
-        return models.Ping.objects.filter(endpoint__server__id=self.kwargs['server_pk'], endpoint__id=self.kwargs['server_endpoint_pk'])
+        return models.Ping.objects.filter(
+            endpoint__server__id=self.kwargs['server_pk'],
+            endpoint__id=self.kwargs['server_endpoint_pk']
+        )
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'put':
@@ -107,4 +134,9 @@ class PingViewSet(viewsets.ModelViewSet):
         """
         Apply the parent Endpoint
         """
-        serializer.save(endpoint=get_object_or_404(models.Endpoint.objects.all(), pk=self.kwargs['server_endpoint_pk']))
+        serializer.save(
+            endpoint=get_object_or_404(
+                models.Endpoint.objects.all(),
+                pk=self.kwargs['server_endpoint_pk']
+            )
+        )
