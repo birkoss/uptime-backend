@@ -122,16 +122,17 @@ class PingViewSet(viewsets.ModelViewSet):
 
         qs_filters = Q()
         qs_filters.add(Q(endpoint__id=server_endpoint_pk), Q.AND)
-        qs_filters.add(Q(date_added__year=year), Q.AND)
-        qs_filters.add(Q(date_added__month=month), Q.AND)
 
         qs_grouping = {'grouping': TruncMonth('date_added')}
+        limit = 14
         if grouping == 'hour':
             qs_grouping = {'grouping': TruncHour('date_added')}
-            qs_filters.add(Q(date_added__day=day), Q.AND)
+            limit = 24
+        elif grouping == 'day':
+            qs_grouping = {'grouping': TruncDay('date_added')}
+            limit = 24
 
-
-        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time'))
+        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time')).order_by("-grouping")[:24]
         return Response(pings)
 
     def initial(self, request, *args, **kwargs):
