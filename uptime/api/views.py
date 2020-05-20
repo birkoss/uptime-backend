@@ -114,14 +114,7 @@ class PingViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['GET'], name='Attach meta items ids')
     def stats(self, request, server_pk=None, server_endpoint_pk=None):
-
         grouping = request.GET.get('grouping', 'month')
-        year = request.GET.get('year', '0')
-        month = request.GET.get('month', '0')
-        day = request.GET.get('day', '0')
-
-        qs_filters = Q()
-        qs_filters.add(Q(endpoint__id=server_endpoint_pk), Q.AND)
 
         qs_grouping = {'grouping': TruncMonth('date_added')}
         limit = 14
@@ -132,7 +125,43 @@ class PingViewSet(viewsets.ModelViewSet):
             qs_grouping = {'grouping': TruncDay('date_added')}
             limit = 24
 
-        pings = models.Ping.objects.filter(qs_filters).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(Max('response_time'), Min('response_time'), Avg('response_time'), Count('response_time')).order_by("-grouping")[:24]
+        pings = models.Ping.objects.filter(endpoint__id=server_endpoint_pk).order_by('grouping').annotate(**qs_grouping).values('grouping').annotate(
+            Max('response_time'),
+            Min('response_time'),
+            Avg('response_time'),
+            Count('response_time'),
+            Count('response_code')
+        ).order_by("-grouping")[:24]
+        return Response(pings)
+
+    @action(detail=False, methods=['GET'], name='Attach meta items ids')
+    def codes(self, request, server_pk=None, server_endpoint_pk=None):
+        grouping = request.GET.get('grouping', 'month')
+
+        qs_grouping = {'grouping': TruncMonth('date_added')}
+        limit = 14
+        if grouping == 'hour':
+            qs_grouping = {'grouping': TruncHour('date_added')}
+            limit = 24
+        elif grouping == 'day':
+            qs_grouping = {'grouping': TruncDay('date_added')}
+            limit = 24
+
+        pings_qs = models.Ping.objects.filter(endpoint__id=server_endpoint_pk).order_by('grouping').annotate(**qs_grouping).values('grouping','response_code').annotate(
+            Count('response_code')
+        ).order_by("-grouping")[:24]
+
+        pings = {}
+
+        for ping in pings_qs:
+            date = ping['grouping'].__str__()
+            if pings.get(date) is None:
+                pings[date] = {
+                    'date': date,
+                    'codes': {}
+                }
+            pings.get(date)['codes'][ ping['response_code'] ] = ping['response_code__count']
+        
         return Response(pings)
 
     def initial(self, request, *args, **kwargs):
